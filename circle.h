@@ -8,4 +8,4 @@ typedef struct {
     Vector2D center;
 } Circle;
 
-#endif 
+#endif
