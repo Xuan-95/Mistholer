@@ -4,11 +4,10 @@
 #include "vector.h"
 
 typedef struct {
-    Vector2D min;
-    Vector2D max;
+    double halfHeight;
+    double halfWidth;
 } AABB;
 
-void initAABB(AABB *aabb, double xMin, double xMax, double yMin, double yMax);
-int AABBvsAABB(AABB a, AABB b);
+void initAABB(AABB *aabb, double halfHeight, double halfWidth);
 
 #endif

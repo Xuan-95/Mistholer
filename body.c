@@ -19,16 +19,13 @@ void initShape(Shape *shape, ShapeType type, ...) {
     switch (type) {
     case (SHAPE_CIRCLE): {
         float r = va_arg(args, double);
-        Vector2D center = va_arg(args, Vector2D);
-        initCircle(&shape->as.circle, center.x, center.y, r);
+        initCircle(&shape->as.circle, r);
         break;
     }
     case (SHAPE_AABB): {
-        double xMin = va_arg(args, double);
-        double xMax = va_arg(args, double);
-        double yMin = va_arg(args, double);
-        double yMax = va_arg(args, double);
-        initAABB(&shape->as.aabb, xMin, xMax, yMin, yMax);
+        double halfWidth = va_arg(args, double);
+        double halfHeight = va_arg(args, double);
+        initAABB(&shape->as.aabb, halfHeight, halfWidth);
         break;
     }
     }
@@ -58,8 +55,8 @@ void initBody(Body *body, Shape *shape, Vector2D *position, Vector2D *velocity, 
         float area = 0.0;
         switch (shape->type) {
         case (SHAPE_AABB): {
-            double weight = shape->as.aabb.max.x - shape->as.aabb.min.x;
-            double height = shape->as.aabb.max.x - shape->as.aabb.min.x;
+            double weight = shape->as.aabb.halfWidth * 2;
+            double height = shape->as.aabb.halfHeight * 2;
             area = weight * height;
             break;
         }

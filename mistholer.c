@@ -15,8 +15,7 @@ double getCurrentTime(void) {
 }
 
 // TODO: placeholder
-void updatePhysics(float dt) {
-    return;
+void updatePhysics(float dt, Scene *scene) {
 }
 
 void renderEngine(Scene *scene) {
@@ -25,11 +24,11 @@ void renderEngine(Scene *scene) {
     for (int i = 0; i < scene->count; i++) {
         switch (scene->bodies[i].shape->type) {
         case (SHAPE_AABB): {
-            drawAABB(&scene->bodies[i].shape->as.aabb);
+            drawAABBFilled(&scene->bodies[i].shape->as.aabb, &scene->bodies[i].position);
             break;
         }
         case (SHAPE_CIRCLE): {
-            drawCircle(&scene->bodies[i].shape->as.circle);
+            drawCircleFilled(&scene->bodies[i].shape->as.circle, &scene->bodies[i].position);
             break;
         }
         }
@@ -41,17 +40,17 @@ void renderEngine(Scene *scene) {
 void initBodies(Scene *scene) {
     // Alloca i body dinamicamente o usa addBody che li copia
 
-    Vector2D pos_1 = {200, 100};
+    Vector2D pos_1 = {200, 500};
     Vector2D pos_2 = {400, 200};
 
     Body *body_1 = malloc(sizeof(Body));
     Shape *aabb = malloc(sizeof(Shape));
-    initShape(aabb, SHAPE_AABB, 20.0, 100.0, 20.0, 100.0);
+    initShape(aabb, SHAPE_AABB, 100.0, 20.0);
     initBody(body_1, aabb, &pos_1, NULL, NULL, 0);
 
     Body *body_2 = malloc(sizeof(Body));
     Shape *circle = malloc(sizeof(Shape));
-    initShape(circle, SHAPE_CIRCLE, 30.0, pos_1);
+    initShape(circle, SHAPE_CIRCLE, 30.0);
     initBody(body_2, circle, &pos_2, NULL, NULL, 0);
 
     addBody(scene, body_1);
@@ -85,7 +84,7 @@ int main(void) {
         }
 
         if (accumulator > dt) {
-            updatePhysics(dt);
+            updatePhysics(dt, &scene);
             accumulator -= dt;
         }
         renderEngine(&scene);
