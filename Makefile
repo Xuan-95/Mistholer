@@ -9,6 +9,12 @@ mistholer: $(OBJECTS)
 	$(CC) $(OBJECTS) -o mistholer $(LDFLAGS)
 	rm -f $(OBJECTS)
 
+debug: CFLAGS += -g -O0
+debug: $(OBJECTS)
+	$(CC) $(OBJECTS) -o mistholer $(LDFLAGS)
+	dsymutil mistholer
+	rm -f $(OBJECTS)
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
