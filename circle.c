@@ -1,5 +1,11 @@
 #include "circle.h"
+#include "vector.h"
 #include <math.h>
+
+void initCircle(Circle *circle, double cx, double cy, float r) {
+    circle->r = r;
+    circle->center = (Vector2D){.x = cx, .y = cy};
+}
 
 // check if two Circles intersect, if they collide return 1, otherwise return 0
 int CirclevsCircle(Circle a, Circle b) {

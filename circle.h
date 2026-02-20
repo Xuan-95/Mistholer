@@ -8,4 +8,7 @@ typedef struct {
     Vector2D center;
 } Circle;
 
+void initCircle(Circle *circle, double cx, double cy, float r);
+int CirclevsCircle(Circle a, Circle b);
+
 #endif
