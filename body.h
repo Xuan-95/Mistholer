@@ -7,13 +7,13 @@
 #include <stdint.h>
 
 typedef struct {
-    float density;
-    float restitution;
+    double density;
+    double restitution;
 } BodyMaterial;
 
 typedef struct {
-    float mass;
-    float invMass;
+    double mass;
+    double invMass;
 } MassData;
 
 typedef enum { SHAPE_CIRCLE, SHAPE_AABB } ShapeType;

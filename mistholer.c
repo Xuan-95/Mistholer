@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "scene.h"
 #include "stdio.h"
+#include "vector.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -14,8 +15,33 @@ double getCurrentTime(void) {
     return ts.tv_sec + ts.tv_nsec / 1000000000.0;
 }
 
-// TODO: placeholder
+void resetForces(Scene *scene) {
+    for (int i = 0; i < scene->count; i++) {
+        scene->bodies[i].force.x = 0.0;
+        scene->bodies[i].force.y = 0.0;
+    }
+}
+
+void evalGravity(Scene *scene) {
+    for (int i = 0; i < scene->count; i++) {
+        Body *body = &scene->bodies[i];
+        // TODO: Make g global
+        body->force.y += (body->gravityScale * 500) * body->massData.mass;
+    }
+}
+
+void updateCinematics(double dt, Scene *scene) {
+    for (int i = 0; i < scene->count; i++) {
+        Body *body = &scene->bodies[i];
+        body->velocity = sum2D(body->velocity, scalarMultiply(scalarMultiply(body->force, body->massData.invMass), dt));
+        body->position = sum2D(body->position, scalarMultiply(body->velocity, dt));
+    }
+}
+
 void updatePhysics(float dt, Scene *scene) {
+    resetForces(scene);
+    evalGravity(scene);
+    updateCinematics(dt, scene);
 }
 
 void renderEngine(Scene *scene) {
@@ -43,6 +69,14 @@ void initBodies(Scene *scene) {
     Vector2D pos_1 = {200, 500};
     Vector2D pos_2 = {400, 200};
 
+    /*
+    Vector2D ground_pos = {400, 0};
+    Body *ground_body = malloc(sizeof(Body));
+    Shape *ground_shape = malloc(sizeof(Shape));
+    initShape(ground_shape, SHAPE_AABB, 400, 10);
+    initBody(ground_body, ground_shape, &ground_pos, NULL, NULL, 0);
+        */
+
     Body *body_1 = malloc(sizeof(Body));
     Shape *aabb = malloc(sizeof(Shape));
     initShape(aabb, SHAPE_AABB, 100.0, 20.0);
@@ -55,6 +89,7 @@ void initBodies(Scene *scene) {
 
     addBody(scene, body_1);
     addBody(scene, body_2);
+    // addBody(scene, ground_body);
 }
 int main(void) {
     // TODO: move to a global set of variables
