@@ -1,4 +1,5 @@
 #include "body.h"
+#include "collision.h"
 #include "draw.h"
 #include "raylib.h"
 #include "scene.h"
@@ -21,12 +22,40 @@ void resetForces(Scene *scene) {
         scene->bodies[i].force.y = 0.0;
     }
 }
+// TODO: Update Manifold evaluation: now we consider all couples of bodiess (n^2), we need to implement a smarter
+// evaluation of possible collisions
+void evalCollisions(Scene *scene) {
+    for (int i = 0; i < scene->count; i++) {
+        for (int j = i+1; j < scene->count; j++) {
+            Body *A = &scene->bodies[i];
+            Body *B = &scene->bodies[j];
+            Manifold manifold;
+            initManifold(&manifold, A, B);
+            int isColliding = 0;
+            if (A->shape->type == SHAPE_CIRCLE && B->shape->type == SHAPE_CIRCLE) {
+                isColliding = CircleVsCircle(&manifold);
+            } else if (A->shape->type == SHAPE_AABB && B->shape->type == SHAPE_AABB) {
+                isColliding = AABBVsAABB(&manifold);
+            } else if (A->shape->type == SHAPE_CIRCLE && B->shape->type == SHAPE_AABB) {
+                Body *temp = manifold.A;
+                manifold.A = manifold.B;
+                manifold.B = temp;
+                isColliding = AABBVsCircle(&manifold);
+            } else if (A->shape->type == SHAPE_AABB && B->shape->type == SHAPE_CIRCLE) {
+                isColliding = AABBVsCircle(&manifold);
+            }
+            if (isColliding) {
+                resolveCollision(&manifold);
+            }
+        }
+    }
+}
 
 void evalGravity(Scene *scene) {
     for (int i = 0; i < scene->count; i++) {
         Body *body = &scene->bodies[i];
         // TODO: Make g global
-        body->force.y += (body->gravityScale * 500) * body->massData.mass;
+        body->force.y += (body->gravityScale * 300) * body->massData.mass;
     }
 }
 
@@ -41,6 +70,7 @@ void updateCinematics(double dt, Scene *scene) {
 void updatePhysics(float dt, Scene *scene) {
     resetForces(scene);
     evalGravity(scene);
+    evalCollisions(scene);
     updateCinematics(dt, scene);
 }
 
@@ -68,14 +98,15 @@ void initBodies(Scene *scene) {
 
     Vector2D pos_1 = {200, 500};
     Vector2D pos_2 = {400, 200};
+    Vector2D pos_3 = {420,300};
 
-    /*
-    Vector2D ground_pos = {400, 0};
+    Vector2D ground_pos = {400, 600};
     Body *ground_body = malloc(sizeof(Body));
     Shape *ground_shape = malloc(sizeof(Shape));
-    initShape(ground_shape, SHAPE_AABB, 400, 10);
+    initShape(ground_shape, SHAPE_AABB, 400.0, 10.0);
     initBody(ground_body, ground_shape, &ground_pos, NULL, NULL, 0);
-        */
+    ground_body->massData.mass = 0.0;
+    ground_body->massData.invMass = 0.0;
 
     Body *body_1 = malloc(sizeof(Body));
     Shape *aabb = malloc(sizeof(Shape));
@@ -87,9 +118,15 @@ void initBodies(Scene *scene) {
     initShape(circle, SHAPE_CIRCLE, 30.0);
     initBody(body_2, circle, &pos_2, NULL, NULL, 0);
 
+    Body *body_3 = malloc(sizeof(Body));
+    Shape *circle_3 = malloc(sizeof(Shape));
+    initShape(circle_3, SHAPE_CIRCLE, 50.0);
+    initBody(body_3, circle_3, &pos_3, NULL, NULL, 0);
+
     addBody(scene, body_1);
     addBody(scene, body_2);
-    // addBody(scene, ground_body);
+    addBody(scene, body_3);
+    addBody(scene, ground_body);
 }
 int main(void) {
     // TODO: move to a global set of variables
