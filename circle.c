@@ -1,6 +1,4 @@
 #include "circle.h"
-#include "vector.h"
-#include <math.h>
 
 void initCircle(Circle *circle, float r) { circle->r = r; }
 

@@ -1,10 +1,6 @@
 #include "body.h"
-#include "aabb.h"
-#include "circle.h"
 #include "raylib.h"
-#include "vector.h"
 #include <stdarg.h>
-#include <stdio.h>
 
 // TODO: develop pairs generation to pass from the broad phase to the narrow phase
 //
@@ -50,7 +46,7 @@ void initBody(Body *body, Shape *shape, Vector2D *position, Vector2D *velocity, 
     body->layer        = layer;
     body->layerMask    = 0xFFFFFFFF;
 
-    body->shape = shape;
+    body->shape = *shape;
     if (shape) {
         float area = 0.0;
         switch (shape->type) {

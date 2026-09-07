@@ -1,12 +1,10 @@
 #include "body.h"
 #include "collision.h"
+#include "common.h"
 #include "draw.h"
+#include "loader.h"
 #include "raylib.h"
 #include "scene.h"
-#include "stdio.h"
-#include "vector.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 // Get current time in seconds
@@ -32,16 +30,16 @@ void evalCollisions(Scene *scene) {
             Manifold manifold;
             initManifold(&manifold, A, B);
             int isColliding = 0;
-            if (A->shape->type == SHAPE_CIRCLE && B->shape->type == SHAPE_CIRCLE) {
+            if (A->shape.type == SHAPE_CIRCLE && B->shape.type == SHAPE_CIRCLE) {
                 isColliding = CircleVsCircle(&manifold);
-            } else if (A->shape->type == SHAPE_AABB && B->shape->type == SHAPE_AABB) {
+            } else if (A->shape.type == SHAPE_AABB && B->shape.type == SHAPE_AABB) {
                 isColliding = AABBVsAABB(&manifold);
-            } else if (A->shape->type == SHAPE_CIRCLE && B->shape->type == SHAPE_AABB) {
+            } else if (A->shape.type == SHAPE_CIRCLE && B->shape.type == SHAPE_AABB) {
                 Body *temp  = manifold.A;
                 manifold.A  = manifold.B;
                 manifold.B  = temp;
                 isColliding = AABBVsCircle(&manifold);
-            } else if (A->shape->type == SHAPE_AABB && B->shape->type == SHAPE_CIRCLE) {
+            } else if (A->shape.type == SHAPE_AABB && B->shape.type == SHAPE_CIRCLE) {
                 isColliding = AABBVsCircle(&manifold);
             }
             if (isColliding) {
@@ -78,13 +76,13 @@ void renderEngine(Scene *scene) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
     for (int i = 0; i < scene->count; i++) {
-        switch (scene->bodies[i].shape->type) {
+        switch (scene->bodies[i].shape.type) {
         case (SHAPE_AABB): {
-            drawAABBFilled(&scene->bodies[i].shape->as.aabb, &scene->bodies[i].position);
+            drawAABBFilled(&scene->bodies[i].shape.as.aabb, &scene->bodies[i].position);
             break;
         }
         case (SHAPE_CIRCLE): {
-            drawCircleFilled(&scene->bodies[i].shape->as.circle, &scene->bodies[i].position);
+            drawCircleFilled(&scene->bodies[i].shape.as.circle, &scene->bodies[i].position);
             break;
         }
         }
@@ -92,42 +90,6 @@ void renderEngine(Scene *scene) {
     EndDrawing();
 }
 
-// only for demo purposes
-void initBodies(Scene *scene) {
-    // Alloca i body dinamicamente o usa addBody che li copia
-
-    Vector2D pos_1 = {200, 500};
-    Vector2D pos_2 = {400, 200};
-    Vector2D pos_3 = {420, 300};
-
-    Vector2D ground_pos   = {400, 600};
-    Body    *ground_body  = malloc(sizeof(Body));
-    Shape   *ground_shape = malloc(sizeof(Shape));
-    initShape(ground_shape, SHAPE_AABB, 400.0, 10.0);
-    initBody(ground_body, ground_shape, &ground_pos, NULL, NULL, 0);
-    ground_body->massData.mass    = 0.0;
-    ground_body->massData.invMass = 0.0;
-
-    Body  *body_1 = malloc(sizeof(Body));
-    Shape *aabb   = malloc(sizeof(Shape));
-    initShape(aabb, SHAPE_AABB, 100.0, 20.0);
-    initBody(body_1, aabb, &pos_1, NULL, NULL, 0);
-
-    Body  *body_2 = malloc(sizeof(Body));
-    Shape *circle = malloc(sizeof(Shape));
-    initShape(circle, SHAPE_CIRCLE, 30.0);
-    initBody(body_2, circle, &pos_2, NULL, NULL, 0);
-
-    Body  *body_3   = malloc(sizeof(Body));
-    Shape *circle_3 = malloc(sizeof(Shape));
-    initShape(circle_3, SHAPE_CIRCLE, 50.0);
-    initBody(body_3, circle_3, &pos_3, NULL, NULL, 0);
-
-    addBody(scene, body_1);
-    addBody(scene, body_2);
-    addBody(scene, body_3);
-    addBody(scene, ground_body);
-}
 int main(void) {
     // TODO: move to a global set of variables
     const float FPS         = 60;
@@ -141,7 +103,7 @@ int main(void) {
 
     Scene scene;
     initScene(&scene);
-    initBodies(&scene);
+    loadSceneFromJson("test.json", &scene);
     double frameStart = getCurrentTime();
 
     while (!WindowShouldClose()) {

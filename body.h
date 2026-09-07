@@ -3,7 +3,7 @@
 
 #include "aabb.h"
 #include "circle.h"
-#include "vector.h"
+#include "common.h"
 #include <stdint.h>
 
 typedef struct {
@@ -27,7 +27,14 @@ typedef struct {
 } Shape;
 
 typedef struct {
-    Shape       *shape;
+    Shape        shape;
+    Vector2D     position;
+    Vector2D     velocity;
+    BodyMaterial material;
+} BodyDesc;
+
+typedef struct {
+    Shape        shape;
     BodyMaterial material;
     MassData     massData;
     Vector2D     position;

@@ -1,7 +1,4 @@
 #include "collision.h"
-#include "vector.h"
-#include <math.h>
-#include <stdlib.h>
 
 void initManifold(Manifold *m, Body *A, Body *B) {
     m->A           = A;
@@ -52,7 +49,7 @@ int CircleVsCircle(Manifold *m) {
     Body    *B = m->B;
 
     Vector2D ab            = diff2D(B->position, A->position);
-    float    squaredRadius = pow(A->shape->as.circle.r + B->shape->as.circle.r, 2);
+    float    squaredRadius = pow(A->shape.as.circle.r + B->shape.as.circle.r, 2);
 
     float    squaredDistance = dot2D(ab, ab);
     if (squaredDistance > squaredRadius)
@@ -66,7 +63,7 @@ int CircleVsCircle(Manifold *m) {
         m->normal      = scalarMultiply(ab, 1.0 / distance);
         return 1;
     } else {
-        m->penetration = A->shape->as.circle.r;
+        m->penetration = A->shape.as.circle.r;
         m->normal      = (Vector2D){.x = 1, .y = 0};
         return 1;
     }
@@ -78,8 +75,8 @@ int AABBVsAABB(Manifold *m) {
     Body    *A    = m->A;
     Body    *B    = m->B;
     Vector2D ab   = diff2D(B->position, A->position);
-    AABB     abox = A->shape->as.aabb;
-    AABB     bbox = B->shape->as.aabb;
+    AABB     abox = A->shape.as.aabb;
+    AABB     bbox = B->shape.as.aabb;
 
     // Evaluate x-axis
     float x_overlap = abox.halfWidth + bbox.halfWidth - fabs(ab.x);
@@ -122,12 +119,12 @@ int AABBVsCircle(Manifold *m) {
     Body    *A = m->A; // AABB
     Body    *B = m->B; // Circle
 
-    AABB     aabb      = A->shape->as.aabb;
+    AABB     aabb      = A->shape.as.aabb;
     double   aabb_xmin = A->position.x - aabb.halfWidth;
     double   aabb_xmax = A->position.x + aabb.halfWidth;
     double   aabb_ymin = A->position.y - aabb.halfHeight;
     double   aabb_ymax = A->position.y + aabb.halfHeight;
-    Circle   circle    = B->shape->as.circle;
+    Circle   circle    = B->shape.as.circle;
 
     Vector2D circleCenter = B->position;
     Vector2D closest;

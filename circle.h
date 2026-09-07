@@ -1,7 +1,7 @@
 #ifndef CIRCLE_H
 #define CIRCLE_H
 
-#include "vector.h"
+#include "common.h"
 
 typedef struct {
     float r;

@@ -2,7 +2,7 @@
 #define DRAW_H
 #include "aabb.h"
 #include "circle.h"
-#include "vector.h"
+#include "common.h"
 
 void drawAABB(AABB *aabb, Vector2D *position);
 void drawAABBFilled(AABB *aabb, Vector2D *position);

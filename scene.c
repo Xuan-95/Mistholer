@@ -1,10 +1,16 @@
 #include "scene.h"
+#include "body.h"
 #include "memory.h"
 
 void initScene(Scene *scene) {
     scene->bodies   = NULL;
     scene->count    = 0;
     scene->capacity = 0;
+}
+
+void destroyScene(Scene *scene) {
+    FREE_ARRAY(Body, scene->bodies, scene->capacity);
+    scene->bodies = NULL;
 }
 
 void addBody(Scene *scene, Body *body) {
@@ -15,4 +21,11 @@ void addBody(Scene *scene, Body *body) {
     }
     scene->bodies[scene->count] = *body;
     scene->count++;
+}
+
+bool sceneCreateBody(Scene *scene, BodyDesc *desc) {
+    Body body = {0};
+    initBody(&body, &desc->shape, &desc->position, &desc->velocity, &desc->material, 0);
+    addBody(scene, &body);
+    return true;
 }

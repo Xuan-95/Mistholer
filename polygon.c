@@ -1,6 +1,4 @@
 #include "polygon.h"
-#include "vector.h"
-#include <stdlib.h>
 
 void initPolygon(Polygon2D *polygon, int size) {
     polygon->count = size;

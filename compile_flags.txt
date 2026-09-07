@@ -1,4 +1,5 @@
 -I/opt/homebrew/include
+-Iexternal/cjson
 -Wall
 -Wextra
 -pedantic

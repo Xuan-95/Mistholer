@@ -1,8 +1,8 @@
 CC = gcc
-CFLAGS = -I/opt/homebrew/include -Wall -Wextra -pedantic
+CFLAGS = -I/opt/homebrew/include -Iexternal/cjson -Wall -Wextra -pedantic
 LDFLAGS = -L/opt/homebrew/lib -lraylib -lm
 
-SOURCES = $(wildcard *.c)
+SOURCES = $(wildcard *.c) external/cjson/cJSON.c
 OBJECTS = $(SOURCES:.c=.o)
 
 mistholer: $(OBJECTS)
@@ -12,7 +12,6 @@ mistholer: $(OBJECTS)
 debug: CFLAGS += -g -O0
 debug: $(OBJECTS)
 	$(CC) $(OBJECTS) -o mistholer $(LDFLAGS)
-	dsymutil mistholer
 	rm -f $(OBJECTS)
 
 %.o: %.c
