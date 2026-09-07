@@ -5,9 +5,9 @@
 
 // A manifold is an object that contains all the information needed to solve a collision
 typedef struct {
-    Body *A;
-    Body *B;
-    float penetration;
+    Body    *A;
+    Body    *B;
+    float    penetration;
     Vector2D normal;
 } Manifold;
 

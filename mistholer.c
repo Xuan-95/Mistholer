@@ -26,9 +26,9 @@ void resetForces(Scene *scene) {
 // evaluation of possible collisions
 void evalCollisions(Scene *scene) {
     for (int i = 0; i < scene->count; i++) {
-        for (int j = i+1; j < scene->count; j++) {
-            Body *A = &scene->bodies[i];
-            Body *B = &scene->bodies[j];
+        for (int j = i + 1; j < scene->count; j++) {
+            Body    *A = &scene->bodies[i];
+            Body    *B = &scene->bodies[j];
             Manifold manifold;
             initManifold(&manifold, A, B);
             int isColliding = 0;
@@ -37,9 +37,9 @@ void evalCollisions(Scene *scene) {
             } else if (A->shape->type == SHAPE_AABB && B->shape->type == SHAPE_AABB) {
                 isColliding = AABBVsAABB(&manifold);
             } else if (A->shape->type == SHAPE_CIRCLE && B->shape->type == SHAPE_AABB) {
-                Body *temp = manifold.A;
-                manifold.A = manifold.B;
-                manifold.B = temp;
+                Body *temp  = manifold.A;
+                manifold.A  = manifold.B;
+                manifold.B  = temp;
                 isColliding = AABBVsCircle(&manifold);
             } else if (A->shape->type == SHAPE_AABB && B->shape->type == SHAPE_CIRCLE) {
                 isColliding = AABBVsCircle(&manifold);
@@ -61,7 +61,7 @@ void evalGravity(Scene *scene) {
 
 void updateCinematics(double dt, Scene *scene) {
     for (int i = 0; i < scene->count; i++) {
-        Body *body = &scene->bodies[i];
+        Body *body     = &scene->bodies[i];
         body->velocity = sum2D(body->velocity, scalarMultiply(scalarMultiply(body->force, body->massData.invMass), dt));
         body->position = sum2D(body->position, scalarMultiply(body->velocity, dt));
     }
@@ -98,27 +98,27 @@ void initBodies(Scene *scene) {
 
     Vector2D pos_1 = {200, 500};
     Vector2D pos_2 = {400, 200};
-    Vector2D pos_3 = {420,300};
+    Vector2D pos_3 = {420, 300};
 
-    Vector2D ground_pos = {400, 600};
-    Body *ground_body = malloc(sizeof(Body));
-    Shape *ground_shape = malloc(sizeof(Shape));
+    Vector2D ground_pos   = {400, 600};
+    Body    *ground_body  = malloc(sizeof(Body));
+    Shape   *ground_shape = malloc(sizeof(Shape));
     initShape(ground_shape, SHAPE_AABB, 400.0, 10.0);
     initBody(ground_body, ground_shape, &ground_pos, NULL, NULL, 0);
-    ground_body->massData.mass = 0.0;
+    ground_body->massData.mass    = 0.0;
     ground_body->massData.invMass = 0.0;
 
-    Body *body_1 = malloc(sizeof(Body));
-    Shape *aabb = malloc(sizeof(Shape));
+    Body  *body_1 = malloc(sizeof(Body));
+    Shape *aabb   = malloc(sizeof(Shape));
     initShape(aabb, SHAPE_AABB, 100.0, 20.0);
     initBody(body_1, aabb, &pos_1, NULL, NULL, 0);
 
-    Body *body_2 = malloc(sizeof(Body));
+    Body  *body_2 = malloc(sizeof(Body));
     Shape *circle = malloc(sizeof(Shape));
     initShape(circle, SHAPE_CIRCLE, 30.0);
     initBody(body_2, circle, &pos_2, NULL, NULL, 0);
 
-    Body *body_3 = malloc(sizeof(Body));
+    Body  *body_3   = malloc(sizeof(Body));
     Shape *circle_3 = malloc(sizeof(Shape));
     initShape(circle_3, SHAPE_CIRCLE, 50.0);
     initBody(body_3, circle_3, &pos_3, NULL, NULL, 0);
@@ -130,12 +130,12 @@ void initBodies(Scene *scene) {
 }
 int main(void) {
     // TODO: move to a global set of variables
-    const float FPS = 60;
-    const float dt = 1.0 / FPS;
-    float accumulator = 0;
+    const float FPS         = 60;
+    const float dt          = 1.0 / FPS;
+    float       accumulator = 0;
 
-    const int screenWidth = 800;
-    const int screenHeight = 600;
+    const int   screenWidth  = 800;
+    const int   screenHeight = 600;
     InitWindow(screenWidth, screenHeight, "Mistholer");
     SetTargetFPS(FPS);
 
@@ -148,7 +148,7 @@ int main(void) {
         float currentTime = getCurrentTime();
 
         accumulator += currentTime - frameStart;
-        frameStart = currentTime;
+        frameStart   = currentTime;
 
         // Clamp the accumulator to a threshold to avoid too many physics updates
         if (accumulator > 0.2) {

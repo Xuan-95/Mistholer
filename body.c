@@ -23,7 +23,7 @@ void initShape(Shape *shape, ShapeType type, ...) {
         break;
     }
     case (SHAPE_AABB): {
-        double halfWidth = va_arg(args, double);
+        double halfWidth  = va_arg(args, double);
         double halfHeight = va_arg(args, double);
         initAABB(&shape->as.aabb, halfHeight, halfWidth);
         break;
@@ -33,7 +33,7 @@ void initShape(Shape *shape, ShapeType type, ...) {
 }
 
 void initMaterial(BodyMaterial *material) {
-    material->density = 1.0;
+    material->density     = 1.0;
     material->restitution = 1.0;
 }
 
@@ -47,8 +47,8 @@ void initBody(Body *body, Shape *shape, Vector2D *position, Vector2D *velocity, 
         initMaterial(&body->material);
     }
     body->gravityScale = 1.0;
-    body->layer = layer;
-    body->layerMask = 0xFFFFFFFF;
+    body->layer        = layer;
+    body->layerMask    = 0xFFFFFFFF;
 
     body->shape = shape;
     if (shape) {
@@ -57,7 +57,7 @@ void initBody(Body *body, Shape *shape, Vector2D *position, Vector2D *velocity, 
         case (SHAPE_AABB): {
             double weight = shape->as.aabb.halfWidth * 2;
             double height = shape->as.aabb.halfHeight * 2;
-            area = weight * height;
+            area          = weight * height;
             break;
         }
         case (SHAPE_CIRCLE): {
@@ -65,13 +65,12 @@ void initBody(Body *body, Shape *shape, Vector2D *position, Vector2D *velocity, 
             break;
         }
         }
-        body->massData.mass = body->material.density * area;
+        body->massData.mass    = body->material.density * area;
         body->massData.invMass = 1.0 / body->massData.mass;
     } else {
-        body->massData.mass = 0.0;
+        body->massData.mass    = 0.0;
         body->massData.invMass = 0.0;
     }
 }
 
-void freeBody(Body *body) {
-}
+void freeBody(Body *body) {}

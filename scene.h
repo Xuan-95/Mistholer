@@ -5,8 +5,8 @@
 
 typedef struct {
     Body *bodies;
-    int count;    // Number of active bodies
-    int capacity; // Body capacity
+    int   count;    // Number of active bodies
+    int   capacity; // Body capacity
 } Scene;
 
 void initScene(Scene *scene);

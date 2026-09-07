@@ -1,43 +1,19 @@
 ---
 BasedOnStyle: LLVM
+ColumnLimit: 120
 IndentWidth: 4
 TabWidth: 4
 UseTab: Never
-ColumnLimit: 120
-
-# Braces
-BreakBeforeBraces: Attach
-BraceWrapping:
-  AfterFunction: true
-  AfterControlStatement: false
-  AfterStruct: false
-  AfterEnum: false
-
-# Indentation
-IndentCaseLabels: false
-IndentGotoLabels: true
-IndentPPDirectives: None
-
-# Alignment
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
-AlignTrailingComments: true
-PointerAlignment: Right
-
-# Spaces
-SpaceBeforeParens: ControlStatements
-SpaceAfterCStyleCast: false
-SpacesInParentheses: false
-SpacesInSquareBrackets: false
-
-# Line breaks
-AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterReturnType: None
-
-# Other
-SortIncludes: true
-KeepEmptyLinesAtTheStartOfBlocks: false
-MaxEmptyLinesToKeep: 1
-...
+AlignConsecutiveAssignments:
+  Enabled: true
+  AlignCompound: true
+  PadOperators: true
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: true
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: true
+AlignConsecutiveBitFields:
+  Enabled: true
+  AcrossEmptyLines: true

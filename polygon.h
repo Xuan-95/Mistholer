@@ -5,7 +5,7 @@
 
 typedef struct {
     Vector2D *points;
-    int count;
+    int       count;
 } Polygon2D;
 
 void initPolygon(Polygon2D *polygon, int size);
