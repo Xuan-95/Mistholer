@@ -46,6 +46,7 @@ void evalCollisions(Scene *scene) {
             }
             if (isColliding) {
                 resolveCollision(&manifold);
+                positionalCorrection(&manifold);
             }
         }
     }

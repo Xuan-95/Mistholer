@@ -9,8 +9,14 @@ void initManifold(Manifold *m, Body *A, Body *B) {
 
 // Solve collision between two objects, updating the velocities applying an impulse
 void resolveCollision(Manifold *m) {
-    Vector2D relativeVelocity = diff2D(m->B->velocity, m->A->velocity);
+    double invMassA   = m->A->massData.invMass;
+    double invMassB   = m->B->massData.invMass;
+    double invMassSum = invMassA + invMassB;
 
+    if (invMassSum == 0.0)
+        return;
+
+    Vector2D relativeVelocity    = diff2D(m->B->velocity, m->A->velocity);
     double   velocityAlongNormal = dot2D(relativeVelocity, m->normal);
 
     // If the objects are separating, do not evaluate collision
@@ -24,7 +30,6 @@ void resolveCollision(Manifold *m) {
 
     m->A->velocity = diff2D(m->A->velocity, scalarMultiply(impulse, m->A->massData.invMass));
     m->B->velocity = sum2D(m->B->velocity, scalarMultiply(impulse, m->B->massData.invMass));
-    positionalCorrection(m);
 }
 
 // This function is needed to avoid the penetration of an object inside another
