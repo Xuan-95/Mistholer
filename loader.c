@@ -39,6 +39,7 @@ char *readTextFile(const char *path) {
     return text;
 }
 
+// Parse array from cJSON field
 bool readVector(const cJSON *json, Vector2D *out) {
     if (!cJSON_IsArray(json) || cJSON_GetArraySize(json) != 2) {
         return false;
@@ -56,6 +57,20 @@ bool readVector(const cJSON *json, Vector2D *out) {
     return true;
 }
 
+// Parse positive (strictly greater than zero) number from cJSON field.
+bool readPositiveNonZeroNumber(const cJSON *json, const char *field, double *out) {
+    const cJSON *item = cJSON_GetObjectItemCaseSensitive(json, field);
+    double       num  = cJSON_GetNumberValue(item);
+
+    if (!isfinite(num) || num < 0.0)
+        return false;
+
+    *out = num;
+    return true;
+}
+
+/* Parse the Shape from the JSON file that will be included in the BodyDesc object.
+ * The Shape will be different based on the 'type' field of the JSON */
 bool readShape(const cJSON *json, Shape *out) {
     if (!cJSON_IsObject(json))
         return false;
@@ -67,26 +82,18 @@ bool readShape(const cJSON *json, Shape *out) {
     Shape shape = {0};
 
     if (strcmp(type->valuestring, "circle") == 0) {
-        const cJSON *radius_json = cJSON_GetObjectItemCaseSensitive(json, "radius");
-        double       radius      = cJSON_GetNumberValue(radius_json);
-
-        if (!isfinite(radius) || radius < 0.0)
+        double radius;
+        if (!readPositiveNonZeroNumber(json, "radius", &radius))
             return false;
-
         initShape(&shape, SHAPE_CIRCLE, radius);
 
     } else if (strcmp(type->valuestring, "aabb") == 0) {
-        const cJSON *halfheight_json = cJSON_GetObjectItemCaseSensitive(json, "halfHeight");
-        const cJSON *halfwidth_json  = cJSON_GetObjectItemCaseSensitive(json, "halfWidth");
-        double       halfheight      = cJSON_GetNumberValue(halfheight_json);
-        double       halfwidth       = cJSON_GetNumberValue(halfwidth_json);
-
-        if (!isfinite(halfheight) || halfheight <= 0.0)
+        double halfheight, halfwidth;
+        if (!readPositiveNonZeroNumber(json, "halfWidth", &halfwidth) ||
+            !readPositiveNonZeroNumber(json, "halfHeight", &halfheight))
             return false;
-        if (!isfinite(halfwidth) || halfwidth <= 0.0)
-            return false;
-
         initShape(&shape, SHAPE_AABB, halfwidth, halfheight);
+
     } else {
         fprintf(stderr, "Shape %s not supported", type->valuestring);
         return false;
@@ -96,6 +103,7 @@ bool readShape(const cJSON *json, Shape *out) {
     return true;
 }
 
+/* Parse one element of 'bodies' object written into the JSON file */
 bool readBodyDesc(const cJSON *json, BodyDesc *out) {
     if (!cJSON_IsObject(json))
         return false;
@@ -123,6 +131,8 @@ bool readBodyDesc(const cJSON *json, BodyDesc *out) {
     return true;
 }
 
+/* Load from a JSON file the description of the scene.
+ * The function load the file, build a list of BodyDesc objects and load the Body objects inside the Scene. */
 bool loadSceneFromJson(const char *path, Scene *outScene) {
     char *json_content = readTextFile(path);
     if (!json_content) {
@@ -142,9 +152,11 @@ bool loadSceneFromJson(const char *path, Scene *outScene) {
     initScene(&temp);
 
     bool success = false;
+
     if (!cJSON_IsObject(root))
         goto cleanup;
 
+    // Parse list of bodies
     const cJSON *bodies = cJSON_GetObjectItemCaseSensitive(root, "bodies");
     if (!cJSON_IsArray(bodies))
         goto cleanup;
@@ -152,6 +164,7 @@ bool loadSceneFromJson(const char *path, Scene *outScene) {
     const cJSON *item;
     int          idx = 0;
 
+    // Iterate over each body from the JSON file. Build the BodyDesc and add it to the scene
     cJSON_ArrayForEach(item, bodies) {
         BodyDesc desc;
 
