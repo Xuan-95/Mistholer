@@ -3,6 +3,7 @@
 
 void initBodyDesc(BodyDesc *desc) {
     *desc                      = (BodyDesc){0};
+    desc->gravityScale         = 1.0;
     desc->material.density     = 1.0;
     desc->material.restitution = 1.0;
 }
@@ -111,15 +112,30 @@ bool readBodyDesc(const cJSON *json, BodyDesc *out) {
     BodyDesc desc;
     initBodyDesc(&desc);
 
-    const cJSON *position = cJSON_GetObjectItemCaseSensitive(json, "position");
-    const cJSON *velocity = cJSON_GetObjectItemCaseSensitive(json, "velocity");
-    const cJSON *shape    = cJSON_GetObjectItemCaseSensitive(json, "shape");
+    const cJSON *position           = cJSON_GetObjectItemCaseSensitive(json, "position");
+    const cJSON *velocity           = cJSON_GetObjectItemCaseSensitive(json, "velocity");
+    const cJSON *shape              = cJSON_GetObjectItemCaseSensitive(json, "shape");
+    const cJSON *gravity_scale_json = cJSON_GetObjectItemCaseSensitive(json, "gravity_scale");
+    const cJSON *isStatic           = cJSON_GetObjectItemCaseSensitive(json, "static");
 
     if (!readVector(position, &desc.position))
         return false;
 
     if (velocity && !readVector(velocity, &desc.velocity))
         return false;
+
+    if (gravity_scale_json) {
+        double gravity_scale = cJSON_GetNumberValue(gravity_scale_json);
+        if (!isfinite(gravity_scale))
+            return false;
+        desc.gravityScale = gravity_scale;
+    }
+
+    if (isStatic) {
+        if (!cJSON_IsBool(isStatic))
+            return false;
+        desc.is_static = cJSON_IsTrue(isStatic);
+    }
 
     if (!cJSON_IsObject(shape))
         return false;

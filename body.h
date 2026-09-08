@@ -4,6 +4,7 @@
 #include "aabb.h"
 #include "circle.h"
 #include "common.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef struct {
@@ -26,11 +27,15 @@ typedef struct {
     } as;
 } Shape;
 
+/* Intermediate description of the body. This struct links the frontend to the Body struct, that will be used
+ * during the actual simulation */
 typedef struct {
     Shape        shape;
     Vector2D     position;
     Vector2D     velocity;
     BodyMaterial material;
+    double       gravityScale;
+    bool         is_static;
 } BodyDesc;
 
 typedef struct {
@@ -41,12 +46,10 @@ typedef struct {
     Vector2D     velocity;
     Vector2D     force;
     double       gravityScale;
-    uint32_t     layer;     // Layer where the body is on
-    uint32_t     layerMask; // Layer that interacts with the body
 } Body;
 
 void initShape(Shape *shape, ShapeType type, ...);
-void initBody(Body *body, Shape *shape, Vector2D *position, Vector2D *velocity, BodyMaterial *material, uint32_t layer);
+bool initBody(Body *body, const BodyDesc *desc);
 void freeBody(Body *body);
 
 void initMaterial(BodyMaterial *material);

@@ -33,40 +33,48 @@ void initMaterial(BodyMaterial *material) {
     material->restitution = 1.0;
 }
 
-void initBody(Body *body, Shape *shape, Vector2D *position, Vector2D *velocity, BodyMaterial *material,
-              uint32_t layer) {
-    body->position = position ? *position : (Vector2D){0.0, 0.0};
-    body->velocity = velocity ? *velocity : (Vector2D){0.0, 0.0};
-    if (material) {
-        body->material = *material;
-    } else {
-        initMaterial(&body->material);
-    }
-    body->gravityScale = 1.0;
-    body->layer        = layer;
-    body->layerMask    = 0xFFFFFFFF;
+bool initBody(Body *body, const BodyDesc *desc) {
+    Body result = {0};
 
-    body->shape = *shape;
-    if (shape) {
-        float area = 0.0;
-        switch (shape->type) {
-        case (SHAPE_AABB): {
-            double weight = shape->as.aabb.halfWidth * 2;
-            double height = shape->as.aabb.halfHeight * 2;
-            area          = weight * height;
-            break;
-        }
-        case (SHAPE_CIRCLE): {
-            area = PI * shape->as.circle.r * shape->as.circle.r;
-            break;
-        }
-        }
-        body->massData.mass    = body->material.density * area;
-        body->massData.invMass = 1.0 / body->massData.mass;
+    result.shape        = desc->shape;
+    result.position     = desc->position;
+    result.velocity     = desc->velocity;
+    result.material     = desc->material;
+    result.gravityScale = desc->gravityScale;
+
+    if (desc->is_static) {
+        result.massData.mass    = 0.0;
+        result.massData.invMass = 0.0;
+        result.velocity         = (Vector2D){0.0, 0.0};
     } else {
-        body->massData.mass    = 0.0;
-        body->massData.invMass = 0.0;
+        double area;
+
+        switch (desc->shape.type) {
+        case SHAPE_AABB:
+            area = 4.0 * desc->shape.as.aabb.halfWidth * desc->shape.as.aabb.halfHeight;
+            break;
+
+        case SHAPE_CIRCLE:
+            area = PI * desc->shape.as.circle.r * desc->shape.as.circle.r;
+            break;
+
+        default:
+            return false;
+        }
+
+        double mass = result.material.density * area;
+        if (!isfinite(mass) || mass <= 0.0)
+            return false;
+
+        double invMass = 1.0 / mass;
+        if (!isfinite(invMass))
+            return false;
+
+        result.massData.mass    = mass;
+        result.massData.invMass = invMass;
     }
+
+    *body = result;
+    return true;
 }
-
 void freeBody(Body *body) {}

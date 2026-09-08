@@ -25,7 +25,7 @@ void addBody(Scene *scene, Body *body) {
 
 bool sceneCreateBody(Scene *scene, BodyDesc *desc) {
     Body body = {0};
-    initBody(&body, &desc->shape, &desc->position, &desc->velocity, &desc->material, 0);
+    initBody(&body, desc);
     addBody(scene, &body);
     return true;
 }

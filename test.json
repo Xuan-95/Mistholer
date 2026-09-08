@@ -1,29 +1,59 @@
 {
-  "bodies": [
-    {
-      "position": [200, 150],
-      "velocity": [30, 0],
-      "shape": {
-        "type": "circle",
-        "radius": 25
-      }
-    },
-    {
-      "position": [400, 200],
-      "velocity": [-20, 0],
-      "shape": {
-        "type": "circle",
-        "radius": 40
-      }
-    },
-    {
-      "position": [300, 400],
-      "velocity": [0, 0],
-      "shape": {
-        "type": "aabb",
-        "halfWidth": 60,
-        "halfHeight": 20
-      }
-    }
-  ]
+    "bodies": [
+        {
+            "position": [
+                200,
+                150
+            ],
+            "velocity": [
+                30,
+                0
+            ],
+            "shape": {
+                "type": "circle",
+                "radius": 25
+            }
+        },
+        {
+            "position": [
+                400,
+                200
+            ],
+            "velocity": [
+                -20,
+                0
+            ],
+            "shape": {
+                "type": "circle",
+                "radius": 40
+            }
+        },
+        {
+            "position": [
+                300,
+                400
+            ],
+            "velocity": [
+                0,
+                0
+            ],
+            "shape": {
+                "type": "aabb",
+                "halfWidth": 60,
+                "halfHeight": 20
+            }
+        },
+        {
+            "position": [
+                400,
+                580
+            ],
+            "static": true,
+            "shape": {
+                "type": "aabb",
+                "halfWidth": 400,
+                "halfHeight": 20
+            }
+        }
+    ]
 }
