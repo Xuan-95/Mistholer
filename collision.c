@@ -24,6 +24,7 @@ void resolveCollision(Manifold *m) {
 
     m->A->velocity = diff2D(m->A->velocity, scalarMultiply(impulse, m->A->massData.invMass));
     m->B->velocity = sum2D(m->B->velocity, scalarMultiply(impulse, m->B->massData.invMass));
+    positionalCorrection(m);
 }
 
 // This function is needed to avoid the penetration of an object inside another
@@ -33,12 +34,20 @@ void positionalCorrection(Manifold *m) {
     const float percent = 0.2;
 
     // add slop term to avoid jitter
-    const float slop       = 0.001;
-    Vector2D    correction = scalarMultiply(m->normal, fmax(m->penetration - slop, 0) /
-                                                           (m->A->massData.invMass + m->B->massData.invMass) * percent);
+    const float slop = 0.001;
 
-    m->A->position = diff2D(m->A->position, scalarMultiply(correction, m->A->massData.invMass));
-    m->A->position = sum2D(m->B->position, scalarMultiply(correction, m->B->massData.invMass));
+    double      invMassA   = m->A->massData.invMass;
+    double      invMassB   = m->B->massData.invMass;
+    double      invMassSum = invMassA + invMassB;
+    // Avoid correction for two static bodies
+    if (invMassSum == 0.0)
+        return;
+
+    double   magnitude  = fmax(m->penetration - slop, 0.0) * percent / invMassSum;
+    Vector2D correction = scalarMultiply(m->normal, magnitude);
+
+    m->A->position = diff2D(m->A->position, scalarMultiply(correction, invMassA));
+    m->B->position = sum2D(m->B->position, scalarMultiply(correction, invMassB));
 }
 
 // This function evaluates the collision between two circles, if the circles collide return 1,
@@ -49,7 +58,8 @@ int CircleVsCircle(Manifold *m) {
     Body    *B = m->B;
 
     Vector2D ab            = diff2D(B->position, A->position);
-    float    squaredRadius = pow(A->shape.as.circle.r + B->shape.as.circle.r, 2);
+    double   radiusSum     = A->shape.as.circle.r + B->shape.as.circle.r;
+    float    squaredRadius = pow(radiusSum, 2);
 
     float    squaredDistance = dot2D(ab, ab);
     if (squaredDistance > squaredRadius)
@@ -59,7 +69,7 @@ int CircleVsCircle(Manifold *m) {
     // Circles are colliding, we need to evaluate the manifold
     float distance = sqrt(squaredDistance);
     if (distance > 0) {
-        m->penetration = squaredRadius - distance;
+        m->penetration = radiusSum - distance;
         m->normal      = scalarMultiply(ab, 1.0 / distance);
         return 1;
     } else {
@@ -151,7 +161,7 @@ int AABBVsCircle(Manifold *m) {
     // the normal vector
     float left   = circleCenter.x - aabb_xmin;
     float right  = aabb_xmax - circleCenter.x;
-    float bottom = circleCenter.y - aabb_xmin;
+    float bottom = circleCenter.y - aabb_ymin;
     float top    = aabb_ymax - circleCenter.y;
 
     float minDist = left;
