@@ -51,9 +51,8 @@ void evalCollisions(Scene *scene) {
 
 void evalGravity(Scene *scene) {
     for (int i = 0; i < scene->count; i++) {
-        Body *body = &scene->bodies[i];
-        // TODO: Make g global
-        body->force.y += (body->gravityScale * 300) * body->massData.mass;
+        Body *body     = &scene->bodies[i];
+        body->force.y += (body->gravityScale * scene->gravity) * body->massData.mass;
     }
 }
 
@@ -96,8 +95,8 @@ int main(void) {
     const float dt          = 1.0 / FPS;
     float       accumulator = 0;
 
-    const int   screenWidth  = 800;
-    const int   screenHeight = 600;
+    const int   screenWidth  = 1920;
+    const int   screenHeight = 800;
     InitWindow(screenWidth, screenHeight, "Mistholer");
     SetTargetFPS(FPS);
 

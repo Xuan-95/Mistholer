@@ -1,4 +1,5 @@
 #include "loader.h"
+#include "cJSON.h"
 #include <string.h>
 
 void initBodyDesc(BodyDesc *desc) {
@@ -172,6 +173,19 @@ bool loadSceneFromJson(const char *path, Scene *outScene) {
     if (!cJSON_IsObject(root))
         goto cleanup;
 
+    // Parse gravity
+    const cJSON *scene_gravity_json = cJSON_GetObjectItemCaseSensitive(root, "gravity");
+    if (!scene_gravity_json)
+        goto cleanup;
+
+    double gravity = cJSON_GetNumberValue(scene_gravity_json);
+    if (!isfinite(gravity)) {
+        fprintf(stderr, "Gravity field not valid\n");
+        goto cleanup;
+    }
+
+    temp.gravity = gravity;
+
     // Parse list of bodies
     const cJSON *bodies = cJSON_GetObjectItemCaseSensitive(root, "bodies");
     if (!cJSON_IsArray(bodies))
@@ -185,7 +199,7 @@ bool loadSceneFromJson(const char *path, Scene *outScene) {
         BodyDesc desc;
 
         if (!readBodyDesc(item, &desc)) {
-            fprintf(stderr, "Body %d: description not valid", idx);
+            fprintf(stderr, "Body %d: description not valid\n", idx);
             goto cleanup;
         }
 

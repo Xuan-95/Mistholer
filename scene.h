@@ -5,9 +5,10 @@
 #include "common.h"
 
 typedef struct {
-    Body *bodies;
-    int   count;    // Number of active bodies
-    int   capacity; // Body capacity
+    Body  *bodies;
+    int    count;    // Number of active bodies
+    int    capacity; // Body capacity
+    double gravity;
 } Scene;
 
 void initScene(Scene *scene);

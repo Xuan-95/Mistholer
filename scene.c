@@ -6,6 +6,7 @@ void initScene(Scene *scene) {
     scene->bodies   = NULL;
     scene->count    = 0;
     scene->capacity = 0;
+    scene->gravity  = 980;
 }
 
 void destroyScene(Scene *scene) {
