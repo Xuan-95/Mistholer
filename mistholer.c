@@ -1,10 +1,12 @@
 #include "body.h"
 #include "collision.h"
 #include "common.h"
+#include "config.h"
 #include "draw.h"
+#include "input.h"
 #include "loader.h"
-#include "raylib.h"
 #include "scene.h"
+#include "ui.h"
 #include <time.h>
 
 // Get current time in seconds
@@ -71,7 +73,7 @@ void updatePhysics(float dt, Scene *scene) {
     updateCinematics(dt, scene);
 }
 
-void renderEngine(Scene *scene) {
+void renderEngine(Scene *scene, UIState *ui, double frameTime) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
     for (int i = 0; i < scene->count; i++) {
@@ -86,24 +88,39 @@ void renderEngine(Scene *scene) {
         }
         }
     }
+    DrawRectangle(5, 5, 220, 55, BLACK);
+    DrawText(TextFormat("FrameTime: %.2f ms", frameTime * 1000), 10, 10, 20, WHITE);
+    DrawText(TextFormat("Bodies: %d", scene->count), 10, 35, 20, WHITE);
+    drawUI(ui);
     EndDrawing();
 }
 
 int main(void) {
-    // TODO: move to a global set of variables
-    const float FPS         = 60;
-    const float dt          = 1.0 / FPS;
+    // Default config
+    Config config = {800, 600, 30};
+    parseConfig("./config.ini", &config);
+
+    const float dt          = 1.0 / config.FPS;
     float       accumulator = 0;
 
-    const int   screenWidth  = 1920;
-    const int   screenHeight = 800;
-    InitWindow(screenWidth, screenHeight, "Mistholer");
-    SetTargetFPS(FPS);
+    InitWindow(config.WINDOW_WIDTH, config.WINDOW_HEIGHT, "Mistholer");
+    SetTargetFPS(config.FPS);
 
-    Scene scene;
+    const int   screenWidth  = config.WINDOW_WIDTH;
+    const int   screenHeight = config.WINDOW_HEIGHT;
+    const float FPS          = config.FPS;
+    printf("###########\n");
+    printf("Configuration:\n");
+    printf("FPS: %f\nSCREEN WIDTH: %d\nSCREEN HEIGHT: %d\n", FPS, screenWidth, screenHeight);
+    printf("###########\n");
+
+    UIState ui = {.selectedShape = SHAPE_CIRCLE};
+
+    Scene   scene;
     initScene(&scene);
     loadSceneFromJson("test.json", &scene);
     double frameStart = getCurrentTime();
+    double updateTime = 0.0;
 
     while (!WindowShouldClose()) {
         float currentTime = getCurrentTime();
@@ -115,12 +132,15 @@ int main(void) {
         if (accumulator > 0.2) {
             accumulator = 0.2;
         }
+        double workStart = getCurrentTime();
 
         if (accumulator > dt) {
             updatePhysics(dt, &scene);
             accumulator -= dt;
         }
-        renderEngine(&scene);
+        handleInput(&scene, &ui);
+        updateTime = getCurrentTime() - workStart;
+        renderEngine(&scene, &ui, updateTime);
     }
 
     return 0;

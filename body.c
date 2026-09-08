@@ -33,6 +33,13 @@ void initMaterial(BodyMaterial *material) {
     material->restitution = 1.0;
 }
 
+void initBodyDesc(BodyDesc *desc) {
+    *desc                      = (BodyDesc){0};
+    desc->gravityScale         = 1.0;
+    desc->material.density     = 1.0;
+    desc->material.restitution = 1.0;
+}
+
 bool initBody(Body *body, const BodyDesc *desc) {
     Body result = {0};
 

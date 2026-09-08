@@ -50,6 +50,7 @@ typedef struct {
 
 void initShape(Shape *shape, ShapeType type, ...);
 bool initBody(Body *body, const BodyDesc *desc);
+void initBodyDesc(BodyDesc *desc);
 void freeBody(Body *body);
 
 void initMaterial(BodyMaterial *material);

@@ -1,4 +1,5 @@
 {
+    "gravity": 980,
     "bodies": [
         {
             "position": [
@@ -45,13 +46,13 @@
         },
         {
             "position": [
-                400,
-                580
+                960,
+                800
             ],
             "static": true,
             "shape": {
                 "type": "aabb",
-                "halfWidth": 400,
+                "halfWidth": 1000,
                 "halfHeight": 20
             }
         }

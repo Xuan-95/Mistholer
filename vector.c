@@ -6,6 +6,8 @@ Vector2D scalarMultiply(Vector2D a, float scalar) { return (Vector2D){.x = a.x *
 
 double   dot2D(Vector2D a, Vector2D b) { return (a.x * b.x) + (a.y * b.y); }
 
+Vector2D toVector2D(Vector2 vec) { return (Vector2D){.x = vec.x, .y = vec.y}; }
+
 // This is a stretch. Cross product is not defined in 2D, This is the
 // determinant of the matrix [[a_x,b_x],[a_y,b_y]]
 double crossProduct2D(Vector2D a, Vector2D b) { return (a.x * b.y) - (a.y * b.x); }

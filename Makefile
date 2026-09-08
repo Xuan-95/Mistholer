@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -I/opt/homebrew/include -Iexternal/cjson -Wall -Wextra -pedantic
+CFLAGS = -I/opt/homebrew/include -Iexternal/cjson -Iexternal/raygui -Wall -Wextra -pedantic
 LDFLAGS = -L/opt/homebrew/lib -lraylib -lm
 
 SOURCES = $(wildcard *.c) external/cjson/cJSON.c

@@ -1,6 +1,8 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include "raylib.h"
+
 typedef struct {
     double x;
     double y;
@@ -11,5 +13,6 @@ Vector2D diff2D(Vector2D a, Vector2D b);
 Vector2D scalarMultiply(Vector2D a, float scalar);
 double   dot2D(Vector2D a, Vector2D b);
 double   crossProduct2D(Vector2D a, Vector2D b);
+Vector2D toVector2D(Vector2 vec);
 
 #endif

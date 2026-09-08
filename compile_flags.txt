@@ -1,5 +1,6 @@
 -I/opt/homebrew/include
 -Iexternal/cjson
+-Iexternal/raygui
 -Wall
 -Wextra
 -pedantic

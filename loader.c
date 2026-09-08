@@ -1,13 +1,5 @@
 #include "loader.h"
-#include "cJSON.h"
 #include <string.h>
-
-void initBodyDesc(BodyDesc *desc) {
-    *desc                      = (BodyDesc){0};
-    desc->gravityScale         = 1.0;
-    desc->material.density     = 1.0;
-    desc->material.restitution = 1.0;
-}
 
 char *readTextFile(const char *path) {
     FILE *file = fopen(path, "rb");
