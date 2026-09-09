@@ -1,7 +1,7 @@
 #ifndef UI_H
 #define UI_H
 
-#include "scene.h"
+#include "physics/scene.h"
 
 typedef struct {
     ShapeType selectedShape;

@@ -2,7 +2,7 @@
 #define COMMON_H
 
 #include "raylib.h"
-#include "vector.h"
+#include "math/vector.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>

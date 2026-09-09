@@ -1,5 +1,5 @@
-#include "ui.h"
-#include "body.h"
+#include "ui/ui.h"
+#include "physics/body.h"
 #include "raylib.h"
 
 #pragma GCC diagnostic push

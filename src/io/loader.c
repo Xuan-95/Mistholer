@@ -1,4 +1,4 @@
-#include "loader.h"
+#include "io/loader.h"
 #include <string.h>
 
 char *readTextFile(const char *path) {
@@ -145,7 +145,7 @@ bool readBodyDesc(const cJSON *json, BodyDesc *out) {
 bool loadSceneFromJson(const char *path, Scene *outScene) {
     char *json_content = readTextFile(path);
     if (!json_content) {
-        fprintf(stderr, "Unable to load scene from %s", path);
+        fprintf(stderr, "Unable to load scene from %s\n", path);
         return false;
     }
 

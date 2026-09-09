@@ -1,4 +1,4 @@
-#include "body.h"
+#include "physics/body.h"
 #include "raylib.h"
 #include <stdarg.h>
 

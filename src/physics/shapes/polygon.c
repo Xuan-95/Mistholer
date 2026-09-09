@@ -1,4 +1,4 @@
-#include "polygon.h"
+#include "physics/shapes/polygon.h"
 
 void initPolygon(Polygon2D *polygon, int size) {
     polygon->count = size;

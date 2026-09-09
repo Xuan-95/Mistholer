@@ -2,9 +2,9 @@
 #define LOADER_H
 
 #include "cJSON.h"
-#include "common.h"
-#include "memory.h"
-#include "scene.h"
+#include "core/common.h"
+#include "core/memory.h"
+#include "physics/scene.h"
 
 void  initBodyDesc(BodyDesc *desc);
 char *readTextFile(const char *path);

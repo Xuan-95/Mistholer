@@ -1,4 +1,4 @@
-#include "vector.h"
+#include "math/vector.h"
 
 Vector2D sum2D(Vector2D a, Vector2D b) { return (Vector2D){.x = a.x + b.x, .y = a.y + b.y}; }
 Vector2D diff2D(Vector2D a, Vector2D b) { return (Vector2D){.x = a.x - b.x, .y = a.y - b.y}; }

@@ -1,7 +1,7 @@
 #ifndef AABB_H
 #define AABB_H
 
-#include "common.h"
+#include "core/common.h"
 
 typedef struct {
     double halfHeight;

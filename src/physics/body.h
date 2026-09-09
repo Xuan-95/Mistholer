@@ -1,9 +1,9 @@
 #ifndef BODY_H
 #define BODY_H
 
-#include "aabb.h"
-#include "circle.h"
-#include "common.h"
+#include "physics/shapes/aabb.h"
+#include "physics/shapes/circle.h"
+#include "core/common.h"
 #include <stdbool.h>
 #include <stdint.h>
 

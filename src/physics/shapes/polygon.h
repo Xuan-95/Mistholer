@@ -1,7 +1,7 @@
 #ifndef POLYGON_H
 #define POLYGON_H
 
-#include "common.h"
+#include "core/common.h"
 
 typedef struct {
     Vector2D *points;

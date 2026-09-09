@@ -1,12 +1,13 @@
-#include "body.h"
-#include "collision.h"
-#include "common.h"
-#include "config.h"
-#include "draw.h"
-#include "input.h"
-#include "loader.h"
-#include "scene.h"
-#include "ui.h"
+#include "physics/body.h"
+#include "physics/collision.h"
+#include "core/common.h"
+#include "io/config.h"
+#include "render/draw.h"
+#include "ui/input.h"
+#include "io/loader.h"
+#include "physics/scene.h"
+#include "ui/ui.h"
+#include <string.h>
 #include <time.h>
 
 // Get current time in seconds
@@ -22,6 +23,9 @@ void resetForces(Scene *scene) {
         scene->bodies[i].force.y = 0.0;
     }
 }
+
+void generateCandidatePairs(Scene *scene, BodyPair *pairs) {}
+
 // TODO: Update Manifold evaluation: now we consider all couples of bodiess (n^2), we need to implement a smarter
 // evaluation of possible collisions
 void evalCollisions(Scene *scene) {
@@ -70,6 +74,9 @@ void updateCinematics(double dt, Scene *scene) {
 void updatePhysics(float dt, Scene *scene) {
     resetForces(scene);
     evalGravity(scene);
+
+    //    BodyPair *pairs;
+    //    generateCandidatePairs(scene, pairs);
     evalCollisions(scene);
     updateCinematics(dt, scene);
 }
@@ -96,7 +103,25 @@ void renderEngine(Scene *scene, UIState *ui, double frameTime) {
     EndDrawing();
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+    if (argc > 2) {
+        fprintf(stderr, "Usage: %s [scene.json]\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+    if (argc == 2 && (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)) {
+        printf("Usage: %s [scene.json]\nDefaults to test.json when no scene is specified.\n", argv[0]);
+        return EXIT_SUCCESS;
+    }
+
+    const char *scenePath = argc == 2 ? argv[1] : "test.json";
+    Scene scene;
+    initScene(&scene);
+    if (!loadSceneFromJson(scenePath, &scene)) {
+        fprintf(stderr, "Failed to load scene: %s\n", scenePath);
+        destroyScene(&scene);
+        return EXIT_FAILURE;
+    }
+
     // Default config
     Config config = {800, 600, 30};
     parseConfig("./config.ini", &config);
@@ -117,9 +142,6 @@ int main(void) {
 
     UIState ui = {.selectedShape = SHAPE_CIRCLE};
 
-    Scene   scene;
-    initScene(&scene);
-    loadSceneFromJson("test.json", &scene);
     double frameStart = getCurrentTime();
     double updateTime = 0.0;
 
@@ -144,5 +166,7 @@ int main(void) {
         renderEngine(&scene, &ui, updateTime);
     }
 
-    return 0;
+    destroyScene(&scene);
+    CloseWindow();
+    return EXIT_SUCCESS;
 }

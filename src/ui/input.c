@@ -1,4 +1,4 @@
-#include "input.h"
+#include "ui/input.h"
 #include <raylib.h>
 
 void handleInput(Scene *scene, UIState *ui) {

@@ -1,8 +1,8 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "scene.h"
-#include "ui.h"
+#include "physics/scene.h"
+#include "ui/ui.h"
 
 void handleInput(Scene *scene, UIState *ui);
 

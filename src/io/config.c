@@ -1,5 +1,5 @@
-#include "config.h"
-#include "common.h"
+#include "io/config.h"
+#include "core/common.h"
 #include <string.h>
 
 #define MAX_LINE 256

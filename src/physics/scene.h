@@ -1,8 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "body.h"
-#include "common.h"
+#include "physics/body.h"
+#include "core/common.h"
 
 typedef struct {
     Body  *bodies;

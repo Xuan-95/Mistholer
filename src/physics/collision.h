@@ -1,7 +1,12 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include "body.h"
+#include "physics/body.h"
+
+typedef struct {
+    int index_a;
+    int index_b;
+} BodyPair;
 
 // A manifold is an object that contains all the information needed to solve a collision
 typedef struct {

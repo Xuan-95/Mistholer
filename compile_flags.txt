@@ -1,3 +1,4 @@
+-Isrc
 -I/opt/homebrew/include
 -Iexternal/cjson
 -Iexternal/raygui

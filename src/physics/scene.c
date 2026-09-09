@@ -1,6 +1,6 @@
-#include "scene.h"
-#include "body.h"
-#include "memory.h"
+#include "physics/scene.h"
+#include "physics/body.h"
+#include "core/memory.h"
 
 void initScene(Scene *scene) {
     scene->bodies   = NULL;

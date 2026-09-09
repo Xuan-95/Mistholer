@@ -1,8 +1,8 @@
 #ifndef DRAW_H
 #define DRAW_H
-#include "aabb.h"
-#include "circle.h"
-#include "common.h"
+#include "physics/shapes/aabb.h"
+#include "physics/shapes/circle.h"
+#include "core/common.h"
 
 void drawAABB(AABB *aabb, Vector2D *position);
 void drawAABBFilled(AABB *aabb, Vector2D *position);

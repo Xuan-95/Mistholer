@@ -1,4 +1,4 @@
-#include "collision.h"
+#include "physics/collision.h"
 
 void initManifold(Manifold *m, Body *A, Body *B) {
     m->A           = A;
